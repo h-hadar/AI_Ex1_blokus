@@ -92,6 +92,7 @@ class GameEngine(object):
 
 def play_simple_search(problem, search_func):
     back_trace = search_func(problem)
+    print("back trace: ", back_trace)
     display = GuiDisplay(problem.board.board_w, problem.board.board_h, title='Intro to AI -- 67842 -- Ex1')
     board = problem.get_start_state()
     if problem.__class__ == BlokusCornersProblem:
@@ -102,6 +103,7 @@ def play_simple_search(problem, search_func):
         except AttributeError:
             dots = []
     for action in back_trace:
+        print(action)
         board.add_move(0, action)
         display.draw_board(board, dots=dots)
     print("Expanded nodes: %d, score: %d" % (problem.expanded, board.score(0)))

@@ -49,8 +49,6 @@ class SearchProblem:
         util.raiseNotDefined()
 
 
-
-
 def depth_first_search(problem):
     """
     Search the deepest nodes in the search tree first.
@@ -66,15 +64,74 @@ def depth_first_search(problem):
     print("Start's successors:", problem.get_successors(problem.get_start_state()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # print("Start:", problem.get_start_state().state)
+    # print("Is the start a goal?", problem.is_goal_state(problem.get_start_state()))
+    # print("Start's successors:", problem.get_successors(problem.get_start_state()))
+    # print("Start's 1st successor state:", problem.get_successors(problem.get_start_state())[1][0].state)
 
+    path = []
+    if problem.is_goal_state(problem.get_start_state()):
+        return path
+    visited_states = set()
+    visited_states.add(problem.get_start_state())
+    fringe_stack = problem.get_successors(problem.get_start_state())
+    
+    while len(fringe_stack) != 0:
+        current = fringe_stack.pop()
+        if current is None:
+            path.pop()
+            continue
+        visited_states.add(current[0])
+        if problem.is_goal_state(current[0]):
+            path.append(current[1])
+            return path
+        successors = problem.get_successors(current[0])
+        added = False
+        fringe_stack.append(None)
+        for child in successors:
+            if child[0] not in visited_states:
+                added = True
+                fringe_stack.append(child)
+        if added:
+            path.append(current[1])
+        else:
+            fringe_stack.pop()  # remove the None we pushed
+    
 
 def breadth_first_search(problem):
     """
     Search the shallowest nodes in the search tree first.
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    path = []
+    if problem.is_goal_state(problem.get_start_state()):
+        return path
+    visited_states = set()
+    visited_states.add(problem.get_start_state())
+    fringe = []
+    successors = problem.get_successors(problem.get_start_state())
+    for s in successors:
+        fringe.append((s, None))
+    while len(fringe):
+        current = fringe.pop(0)  # a tuple of (child, parent_index) where child is a 3-value tuple
+        path.append(current)
+        visited_states.add(current[0][0])
+        parent_index = len(path) - 1
+        if problem.is_goal_state(current[0][0]):
+            # return path
+            break
+        successors = problem.get_successors(current[0][0])
+        for child in successors:
+            if child[0] not in visited_states:
+                fringe.append((child, parent_index))
+                
+    goal = path[-1]
+    parent_index = goal[1]
+    move_list = [goal[0][1]]   # goal[child][move]
+    while parent_index:
+        cur = path[parent_index]  # a tuple of (child, parent_index) where child is a 3-value tuple
+        move_list.append(cur[0][1])
+        parent_index = cur[1]
+    return move_list[::-1]
 
 
 def uniform_cost_search(problem):
