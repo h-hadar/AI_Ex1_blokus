@@ -127,7 +127,7 @@ def breadth_first_search(problem):
     goal = path[-1]
     parent_index = goal[1]
     move_list = [goal[0][1]]   # goal[child][move]
-    while parent_index:
+    while parent_index is not None:
         cur = path[parent_index]  # a tuple of (child, parent_index) where child is a 3-value tuple
         move_list.append(cur[0][1])
         parent_index = cur[1]
@@ -138,8 +138,42 @@ def uniform_cost_search(problem):
     """
     Search the node of least total cost first.
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    path = []
+    if problem.is_goal_state(problem.get_start_state()):
+        return path
+    state_dict = dict()
+    visited_states = set()
+    visited_states.add(problem.get_start_state())
+    fringe = util.PriorityQueue()
+    successors = problem.get_successors(problem.get_start_state())
+    for s in successors:
+        cost = problem.get_cost_of_actions([s[1]])
+        state_dict[s[0]] = (s, None,cost)
+        fringe.push(s[0],cost)
+    while not fringe.isEmpty():
+        current = fringe.pop()  # object of type board
+        data_for_current = state_dict[current]  # state_dict[current] is a tuple (child, parent_index, cost_from_root)
+        path.append(data_for_current)
+        visited_states.add(current)
+        parent_index = len(path) - 1
+        if problem.is_goal_state(current):
+            # return path
+            break
+        successors = problem.get_successors(current)
+        for child in successors:
+            if child[0] not in visited_states:
+                cost = problem.get_cost_of_actions([child[1]]) + data_for_current[2]
+                state_dict[child[0]] = (child, parent_index, cost)
+                fringe.push(child[0], cost)
+                
+    goal = path[-1]
+    parent_index = goal[1]
+    move_list = [goal[0][1]]   # goal[child][move]
+    while parent_index is not None:
+        cur = path[parent_index]  # a tuple of (child, parent_index) where child is a 3-value tuple
+        move_list.append(cur[0][1])
+        parent_index = cur[1]
+    return move_list[::-1]
 
 
 def null_heuristic(state, problem=None):
@@ -154,8 +188,42 @@ def a_star_search(problem, heuristic=null_heuristic):
     """
     Search the node that has the lowest combined cost and heuristic first.
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    path = []
+    if problem.is_goal_state(problem.get_start_state()):
+        return path
+    state_dict = dict()
+    visited_states = set()
+    visited_states.add(problem.get_start_state())
+    fringe = util.PriorityQueue()
+    successors = problem.get_successors(problem.get_start_state())
+    for s in successors:
+        cost = problem.get_cost_of_actions([s[1]])
+        state_dict[s[0]] = (s, None,cost)
+        fringe.push(s[0],cost+ heuristic(s[0],problem))
+    while not fringe.isEmpty():
+        current = fringe.pop()  # object of type board
+        data_for_current = state_dict[current]  # state_dict[current] is a tuple (child, parent_index, cost_from_root)
+        path.append(data_for_current)
+        visited_states.add(current)
+        parent_index = len(path) - 1
+        if problem.is_goal_state(current):
+            # return path
+            break
+        successors = problem.get_successors(current)
+        for child in successors:
+            if child[0] not in visited_states:
+                cost = problem.get_cost_of_actions([child[1]]) + data_for_current[2]
+                state_dict[child[0]] = (child, parent_index, cost)
+                fringe.push(child[0], cost + heuristic(child[0],problem))
+                
+    goal = path[-1]
+    parent_index = goal[1]
+    move_list = [goal[0][1]]   # goal[child][move]
+    while parent_index is not None:
+        cur = path[parent_index]  # a tuple of (child, parent_index) where child is a 3-value tuple
+        move_list.append(cur[0][1])
+        parent_index = cur[1]
+    return move_list[::-1]
 
 
 
