@@ -146,7 +146,7 @@ def blokus_corners_heuristic(state, problem):
 						legal_spots.add((x,y))
 	
 	min_of_corner_distances = math.inf
-	# because we know this is not a goal state, there should be at least one corner with non-zero distance
+	# because we know this is not a goal state, there should be at least one uncovered corner
 	for corner_x, corner_y in corners:
 		if board_matrix[corner_x][corner_y] == 0:  # this corner is already covered
 			continue

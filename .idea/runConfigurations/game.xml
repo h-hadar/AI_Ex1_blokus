@@ -12,7 +12,7 @@
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/game.py" />
-    <option name="PARAMETERS" value="-p tiny_set_2.txt -f ucs -s 6 6 -z corners" />
+    <option name="PARAMETERS" value="python3 game.py -p tiny_set_2.txt -f astar -s 6 6 -z corners -H null_heuristic" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="false" />
