@@ -121,6 +121,8 @@ def blokus_corners_heuristic(state, problem):
 	inadmissible or inconsistent heuristics may find optimal solutions, so be careful.
 	"""
 	"*** YOUR CODE HERE ***"
+	if problem.is_goal_state(state):  # to save up the extra calculations in the case of a goal state.
+		return 0
 	corners = problem.corners
 	board_matrix = state.state
 	# create a set of all locations where tiles can be begin
@@ -143,15 +145,18 @@ def blokus_corners_heuristic(state, problem):
 					if diagonal_taken:
 						legal_spots.add((x,y))
 	
-	sum_of_distances = 0
-	for corner in corners:
-		min_dist = math.inf
+	min_of_corner_distances = math.inf
+	# because we know this is not a goal state, there should be at least one corner with non-zero distance
+	for corner_x, corner_y in corners:
+		if board_matrix[corner_x][corner_y] == 0:  # this corner is already covered
+			continue
+		dist_to_corner = math.inf
 		for (x,y) in legal_spots:
-			dist = abs(corner[0] - x) + abs(corner[1] - y)
-			min_dist = min(min_dist, dist)
-		sum_of_distances += min_dist
-	
-	return sum_of_distances
+			dist = abs(corner_x - x) + abs(corner_y - y)
+			dist_to_corner = min(dist_to_corner, dist)
+		min_of_corner_distances = min(min_of_corner_distances, dist_to_corner)
+	return min_of_corner_distances
+
 
 class BlokusCoverProblem(SearchProblem):
 	def __init__(self, board_w, board_h, piece_list, starting_point=(0, 0), targets=[(0, 0)]):
