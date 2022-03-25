@@ -1,3 +1,5 @@
+import math
+
 from board import Board
 from search import SearchProblem, ucs
 import util
@@ -119,8 +121,37 @@ def blokus_corners_heuristic(state, problem):
 	inadmissible or inconsistent heuristics may find optimal solutions, so be careful.
 	"""
 	"*** YOUR CODE HERE ***"
-	util.raiseNotDefined()
-
+	corners = problem.corners
+	board_matrix = state.state
+	# create a set of all locations where tiles can be begin
+	legal_spots = set()
+	board_w = problem.board_w
+	for x in range(board_w):
+		board_h = problem.board_h
+		for y in range(board_h):
+			if board_matrix[x][y] == -1:
+				horizontal_free = (x-1 < 0 or board_matrix[x-1][y] == -1) and (x + 1 == board_w or
+																			   board_matrix[x+1][y] == -1)
+				vertical_free = (y - 1 < 0 or board_matrix[x][y-1] == -1) and (y + 1 == board_h or
+																			   board_matrix[x][y + 1] == -1)
+				if horizontal_free and vertical_free:
+					diagonal_taken = False
+					if x-1 >= 0 and y-1>=0 : diagonal_taken = diagonal_taken or board_matrix[x-1][y-1] == 0
+					if x-1 >= 0 and y+1 < board_h: diagonal_taken = diagonal_taken or board_matrix[x - 1][y + 1] == 0
+					if x+1 <board_w and y+1 <board_h: diagonal_taken = diagonal_taken or board_matrix[x + 1][y + 1]== 0
+					if x+1 <board_w and y-1 >=0: diagonal_taken = diagonal_taken or board_matrix[x + 1][y - 1]== 0
+					if diagonal_taken:
+						legal_spots.add((x,y))
+	
+	sum_of_distances = 0
+	for corner in corners:
+		min_dist = math.inf
+		for (x,y) in legal_spots:
+			dist = abs(corner[0] - x) + abs(corner[1] - y)
+			min_dist = min(min_dist, dist)
+		sum_of_distances += min_dist
+	
+	return sum_of_distances
 
 class BlokusCoverProblem(SearchProblem):
 	def __init__(self, board_w, board_h, piece_list, starting_point=(0, 0), targets=[(0, 0)]):
@@ -165,7 +196,7 @@ class BlokusCoverProblem(SearchProblem):
 
 def blokus_cover_heuristic(state, problem):
 	"*** YOUR CODE HERE ***"
-	util.raiseNotDefined()
+	
 
 
 class ClosestLocationSearch:
