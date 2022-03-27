@@ -1,4 +1,5 @@
 import math
+from itertools import combinations
 
 from board import Board
 from search import SearchProblem, ucs
@@ -139,7 +140,12 @@ class BlokusCoverProblem(SearchProblem):
         self.board_h = board_h
         self.board_w = board_w
         self.targets = targets.copy()
+        self.piece_list = piece_list
         self.expanded = 0
+        self.closest_targets = math.inf
+        for (t1, t2) in list(combinations(targets, 2)):
+            dist = max(abs(t1[0] - t2[0]), abs(t1[1] - t2[0]))
+            self.closest_targets = min(self.closest_targets, dist)
 
     def get_start_state(self):
         """
@@ -186,18 +192,17 @@ def blokus_cover_heuristic(state, problem):
     targets = problem.targets
     board_matrix = state.state
     uncovered_targets = 0
-    # pieces = problem.piece_list.pieces
-    # min_piece_size = math.inf
-    # for p in pieces:
-    # 	min_piece_size = min(min_piece_size, p.num_tiles)
+    pieces = problem.piece_list.pieces
+    min_piece_size = math.inf
+    for p in pieces:
+        min_piece_size = min(min_piece_size, p.num_tiles)
     # because we know this is not a goal state, there should be at least one uncovered corner
-    for x, y in targets:
-        if board_matrix[x][y] == 0:  # this corner is already covered
+    for t_x, t_y in targets:
+        if board_matrix[t_x][t_y] == 0:  # this corner is already covered
             continue
         uncovered_targets += 1
-    # mult_factor = min(min_piece_size, (min(problem.board_h, problem.board_w) + 1) / 2.0)
-    mult_factor = 1
-    return mult_factor * uncovered_targets
+    mult_factor = min(min_piece_size, (problem.closest_targets + 1) / 2.0)
+    return uncovered_targets * mult_factor
 
 
 class ClosestLocationSearch:
