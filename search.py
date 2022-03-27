@@ -113,16 +113,17 @@ def breadth_first_search(problem):
 		fringe.append((s, None))
 	while len(fringe):
 		current = fringe.pop(0)  # a tuple of (child, parent_index) where child is a 3-value tuple
-		path.append(current)
-		visited_states.add(current[0][0])
-		parent_index = len(path) - 1
-		if problem.is_goal_state(current[0][0]):
-			# return path
-			break
-		successors = problem.get_successors(current[0][0])
-		for child in successors:
-			if child[0] not in visited_states:
-				fringe.append((child, parent_index))
+		if current[0][0] not in visited_states:
+			path.append(current)
+			visited_states.add(current[0][0])
+			parent_index = len(path) - 1
+			if problem.is_goal_state(current[0][0]):
+				# return path
+				break
+			successors = problem.get_successors(current[0][0])
+			for child in successors:
+				if child[0] not in visited_states:
+					fringe.append((child, parent_index))
 	
 	goal = path[-1]
 	parent_index = goal[1]
@@ -152,19 +153,20 @@ def uniform_cost_search(problem):
 		fringe.push(s[0], cost)
 	while not fringe.isEmpty():
 		current = fringe.pop()  # object of type board
-		data_for_current = state_dict[current]  # state_dict[current] is a tuple (child, parent_index, cost_from_root)
-		path.append(data_for_current)
-		visited_states.add(current)
-		parent_index = len(path) - 1
-		if problem.is_goal_state(current):
-			# return path
-			break
-		successors = problem.get_successors(current)
-		for child in successors:
-			if child[0] not in visited_states:
-				cost = problem.get_cost_of_actions([child[1]]) + data_for_current[2]
-				state_dict[child[0]] = (child, parent_index, cost)
-				fringe.push(child[0], cost)
+		if current not in visited_states:
+			data_for_current = state_dict[current]  # state_dict[current] is a tuple (child, parent_index, cost_from_root)
+			path.append(data_for_current)
+			visited_states.add(current)
+			parent_index = len(path) - 1
+			if problem.is_goal_state(current):
+				# return path
+				break
+			successors = problem.get_successors(current)
+			for child in successors:
+				if child[0] not in visited_states:
+					cost = problem.get_cost_of_actions([child[1]]) + data_for_current[2]
+					state_dict[child[0]] = (child, parent_index, cost)
+					fringe.push(child[0], cost)
 	
 	goal = path[-1]
 	parent_index = goal[1]
@@ -202,20 +204,21 @@ def a_star_search(problem, heuristic=null_heuristic):
 		fringe.push(s[0], cost + heuristic(s[0], problem))
 	while not fringe.isEmpty():
 		current = fringe.pop()  # object of type board
-		data_for_current = state_dict[current]  # state_dict[current] is a tuple (child, parent_index, cost_from_root)
-		path.append(data_for_current)
-		visited_states.add(current)
-		parent_index = len(path) - 1
-		if problem.is_goal_state(current):
-			# return path
-			break
-		successors = problem.get_successors(current)
-		for child in successors:
-			if child[0] not in visited_states:
-				cost = problem.get_cost_of_actions([child[1]]) + data_for_current[2]
-				state_dict[child[0]] = (child, parent_index, cost)
-				fringe.push(child[0], cost + heuristic(child[0], problem))
-	
+		if current not in visited_states:
+			data_for_current = state_dict[current]  # state_dict[current] is a tuple (child, parent_index, cost_from_root)
+			path.append(data_for_current)
+			visited_states.add(current)
+			parent_index = len(path) - 1
+			if problem.is_goal_state(current):
+				# return path
+				break
+			successors = problem.get_successors(current)
+			for child in successors:
+				if child[0] not in visited_states:
+					cost = problem.get_cost_of_actions([child[1]]) + data_for_current[2]
+					state_dict[child[0]] = (child, parent_index, cost)
+					fringe.push(child[0], cost + heuristic(child[0], problem))
+
 	goal = path[-1]
 	parent_index = goal[1]
 	move_list = [goal[0][1]]  # goal[child][move]
