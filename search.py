@@ -63,12 +63,6 @@ def depth_first_search(problem):
 	print("Is the start a goal?", problem.is_goal_state(problem.get_start_state()))
 	print("Start's successors:", problem.get_successors(problem.get_start_state()))
 	"""
-	"*** YOUR CODE HERE ***"
-	# print("Start:", problem.get_start_state().state)
-	# print("Is the start a goal?", problem.is_goal_state(problem.get_start_state()))
-	# print("Start's successors:", problem.get_successors(problem.get_start_state()))
-	# print("Start's 1st successor state:", problem.get_successors(problem.get_start_state())[1][0].state)
-	
 	path = []
 	if problem.is_goal_state(problem.get_start_state()):
 		return path
@@ -81,9 +75,9 @@ def depth_first_search(problem):
 		if current is None:
 			path.pop()
 			continue
-		visited_states.add(current[0])
+		visited_states.add(current[0])  # current[0] is the board object of this node
 		if problem.is_goal_state(current[0]):
-			path.append(current[1])
+			path.append(current[1])  # current[1] is the 'move' object of this node
 			return path
 		successors = problem.get_successors(current[0])
 		added = False
