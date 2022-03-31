@@ -118,6 +118,15 @@ def blokus_corners_heuristic(state, problem):
     your heuristic is *not* consistent, and probably not admissible!  On the other hand,
     inadmissible or inconsistent heuristics may find optimal solutions, so be careful.
     """
+
+    """
+    we checked what is the smallest piece we have and checked the min distance between to corners
+    we returned the number of uncovered corners multiplied by the mult factor, which is the minimum of the two values
+    mentioned above.
+    This is a lower bound to the actual amount of tiles required to cover all corners,
+    since if two corners can't be covered with one piece, they will take at least the minimum piece size for each 
+    corner.
+    """
     corners = problem.corners
     board_matrix = state.state
     uncovered_corners = 0
@@ -189,6 +198,14 @@ class BlokusCoverProblem(SearchProblem):
 
 
 def blokus_cover_heuristic(state, problem):
+    """
+        we checked what is the smallest piece we have and checked the min distance between two targets in the problem.
+        we returned the number of uncovered corners multiplied by the mult factor, which is the minimum of the two values
+        mentioned above.
+        This is a lower bound to the actual amount of tiles required to cover all targets,
+        since if two targets can't be covered with one piece, they will take at least the minimum piece size for each
+        target.
+        """
     targets = problem.targets
     board_matrix = state.state
     uncovered_targets = 0
