@@ -75,7 +75,7 @@ class BlokusCornersProblem(SearchProblem):
     def is_goal_state(self, state):
         board_array = state.state
         for x, y in self.corners:
-            if board_array[x][y] == -1:
+            if board_array[y][x] == -1:
                 return False
         return True
 
@@ -136,7 +136,7 @@ def blokus_corners_heuristic(state, problem):
         min_piece_size = min(min_piece_size, p.num_tiles)
     # because we know this is not a goal state, there should be at least one uncovered corner
     for corner_x, corner_y in corners:
-        if board_matrix[corner_x][corner_y] == 0:  # this corner is already covered
+        if board_matrix[corner_y][corner_x] == 0:  # this corner is already covered
             continue
         uncovered_corners += 1
     mult_factor = min(min_piece_size, (min(problem.board_h, problem.board_w) + 1) / 2.0)
